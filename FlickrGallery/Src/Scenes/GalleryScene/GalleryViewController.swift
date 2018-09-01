@@ -9,15 +9,29 @@
 import UIKit
 
 class GalleryViewController: UIViewController {
+  @IBOutlet weak var collectionView: UICollectionView!
+  var operationQueue: OperationQueue!
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    operationQueue = OperationQueue()
+    operationQueue.maxConcurrentOperationCount = 3
+    let session = URLSession(configuration: .default)
+    
+    for _ in 0..<6{
+      let op = ImageDownloadOperation(flickrModel: FlickrModel(), session: session, completionHandler: nil)
+      operationQueue.addOperation(op)
+    }
+    
   }
   
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
   }
 }
+
+
 
 // MARK:- UISearchBarDelegate
 extension GalleryViewController: UISearchBarDelegate {
@@ -33,20 +47,25 @@ extension GalleryViewController: UISearchBarDelegate {
 }
 
 
+
+
 // MARK:- UICollectionViewDataSource
 extension GalleryViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 100
+    return 1
   }
-
+  
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickrCell",
-                                                  for: indexPath)
+//    print("Cell at index:\(indexPath.row)")
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickrCell", for: indexPath) as! FlickrCell
     cell.backgroundColor = UIColor.black
-    // Configure the cell
+    cell.imageView.image = UIImage(named: "IMG_\(indexPath.row).jpg")
+    cell.numberLabel.text = "\(indexPath.row)"
     return cell
   }
 }
+
+
 
 
 // MARK:- UICollectionViewDelegateFlowLayout
@@ -73,4 +92,34 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
   }
 }
 
+
+
+// MARK:- UICollectionViewDataSourcePrefetching
+extension GalleryViewController: UICollectionViewDataSourcePrefetching {
+  /// - Tag: Prefetching
+  func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+//    print("Prefetch:\(indexPaths)")
+    // Begin asynchronously fetching data for the requested index paths.
+//    for indexPath in indexPaths {
+//      let model = models[indexPath.row]
+//      asyncFetcher.fetchAsync(model.id)
+//    }
+  }
+  
+  /// - Tag: CancelPrefetching
+  func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+    // Cancel any in-flight requests for data for the specified index paths.
+//    for indexPath in indexPaths {
+//      let model = models[indexPath.row]
+//      asyncFetcher.cancelFetch(model.id)
+//    }
+  }
+}
+
+// MARK:- UICollectionViewDelegate
+extension GalleryViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    print("Operation:\(operationQueue.operations.count)")
+  }
+}
 
