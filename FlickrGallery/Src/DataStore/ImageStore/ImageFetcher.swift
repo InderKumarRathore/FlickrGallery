@@ -49,15 +49,15 @@ class ImageFetcher {
     self.imageCache.countLimit = cacheImageCount
   }
   
-  
   /// Gets the image a flickr model form cache/disk/network
   ///
   /// - Parameters:
-  ///   - flickrModel: model
+  ///   - flickrModel: flickr model
   ///   - width: thumbnail width, if nil the returns the full image
-  ///   - completionHandler: completion handler
+  ///   - priority: operation priority
+  ///   - index: // TODO: for debugging purpose, just kept for you to see how it's downloading
+  ///   - completionHandler: competion handler
   func getImageFor(flickrModel: FlickrModel, width: Int?, priority: Operation.QueuePriority , index: Int, completionHandler: ((UIImage) -> Void)?) {
-//    print("operations:\(operationQueue.operations.count) | dict:\(operationsInProgress.count)")
     serialDispatchQueue.async { [weak self] in
       if let weakSelf = self {
         // Get the file name
@@ -66,7 +66,7 @@ class ImageFetcher {
         // So first we'll check the image cache
         if let image = weakSelf.imageCache.object(forKey: fileName as NSString) {
           // Wooooo! we found the image in the cache, return this image
-          //print("Image found in cache:\(flickrModel.getFileName())")
+          print("Image found in cache:\(flickrModel.getFileName())")
           // Remove completion handler if any
           completionHandler?(image)
         }
@@ -74,7 +74,7 @@ class ImageFetcher {
           // Operation is not in progress then either file exists at path or don't
           if FileManager.default.fileExists(atPath: flickrModel.getDiskPath()) {
             // Wooooo! we found the image on disk, return this image
-            //print("Image found on disk:\(flickrModel.getFileName())")
+            print("Image found on disk:\(flickrModel.getFileName())")
             if let fileUrl = flickrModel.getDiskUrl() {
               if let scaledImage = weakSelf.downSampleImage(width: width, fileUrl: fileUrl) {
                 // Set the image in image cache
@@ -86,7 +86,7 @@ class ImageFetcher {
           }
           else {
             // File don't exits and operation is not in progresss. Add operation ASAP!
-            //print("Getting image from network:\(flickrModel.getFileName())")
+            print("Getting image from network:\(flickrModel.getFileName())")
             // Create the completion handler
             let imageOperationHandler = weakSelf.getCompletionHandler(width: width, index: index, fileName: fileName)
             // Create the operation

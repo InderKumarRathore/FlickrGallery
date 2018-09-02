@@ -20,7 +20,7 @@ This sample project shows the images from flickr base on search text
 - Right now we can search if there is existing search going on
 - In `ImageFetcher` class there we're loading images from disk on a serial queue. It can be improved
 - There is a general error message for all the server errors, can be improved
-- 
+- Right now there is not detail view controller, hence cann't see full size image. We can add that too with beautiful animation
 
 ## License
 

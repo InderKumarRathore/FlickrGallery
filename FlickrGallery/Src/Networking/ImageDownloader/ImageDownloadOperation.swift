@@ -13,7 +13,7 @@ class ImageDownloadOperation: Operation {
   /// Holds the infomation about the chunk that needs to be downloaded
   private let flickrModel: FlickrModel
   
-  // FIXME: This is for debuggin purpose and can bre removed
+  // TODO: This is for debugging purpose and can be removed
   var index = 0
   
   /// URL Sessoin
@@ -57,7 +57,7 @@ class ImageDownloadOperation: Operation {
                   success = true
                 }
                 catch {
-                  //print("Failed to save the file:\(error)")
+                  print("Failed to save the file:\(error)")
                 }
               }
             }

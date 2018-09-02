@@ -101,7 +101,7 @@ class GalleryViewController: UIViewController {
       return CGSize(width: widthPerCell, height: widthPerCell)
     }
     else {
-      ////print("Warning: Layout is not flow layout")
+      //print("Warning: Layout is not flow layout")
       return CGSize(width: 100.0, height: 100.0)
     }
   }
@@ -178,17 +178,17 @@ extension GalleryViewController: UICollectionViewDataSource {
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    //    ////print("Cell at index:\(indexPath.row)")
+    //    //print("Cell at index:\(indexPath.row)")
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickrCell", for: indexPath) as! FlickrCell
     // Set the tag to compare in the completion handler
     cell.tag = indexPath.row
     
     let flickrModel = self.flickrArray[indexPath.row]
     let width = Int(getSizeOfCell(collectionView: collectionView).width * UIScreen.main.scale)
-    //print("Cell for row: \(indexPath.row)")
+    print("Cell for row: \(indexPath.row)")
     self.imageFetcher.getImageFor(flickrModel: flickrModel, width: width, priority: .high, index: indexPath.row) { (image) in
       DispatchQueue.main.async {
-        ////print("Data fetched: \(indexPath.row)")
+        //print("Data fetched: \(indexPath.row)")
         //Check if the cell is the same cell that requested this image
         if cell.tag == indexPath.row {
           cell.imageView.image = image
@@ -229,7 +229,7 @@ extension GalleryViewController: UICollectionViewDataSourcePrefetching {
   func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
     // Begin asynchronously fetching data for the requested index paths.
     for indexPath in indexPaths {
-      ////print("Prefetching: \(indexPath.row)")
+      //print("Prefetching: \(indexPath.row)")
       let flickrModel = flickrArray[indexPath.row]
       let width = Int(getSizeOfCell(collectionView: collectionView).width * UIScreen.main.scale)
       self.imageFetcher.getImageFor(flickrModel: flickrModel, width: width, priority: .low, index: indexPath.row, completionHandler: nil)
@@ -240,7 +240,7 @@ extension GalleryViewController: UICollectionViewDataSourcePrefetching {
   func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
     // Cancel any in progress requests for data for the specified index paths.
     for indexPath in indexPaths {
-      ////print("Cancel prefetch: \(indexPath.row)")
+      //print("Cancel prefetch: \(indexPath.row)")
       if flickrArray.count > indexPath.row {
         let flickrModel = flickrArray[indexPath.row]
         self.imageFetcher.cancelImageLoadingFor(flickrModel: flickrModel)
@@ -256,7 +256,7 @@ extension GalleryViewController: UICollectionViewDelegate {
   
   func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     // Cell is removed from the collection view, cancel in progress requests for data for the specified index paths
-    //print("did end cell: \(indexPath.row)")
+    print("did end cell: \(indexPath.row)")
     // This method gets called when we reload data
     if flickrArray.count > indexPath.row {
       let flickrModel = flickrArray[indexPath.row]
@@ -269,7 +269,7 @@ extension GalleryViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     // Cell is about to render, check whether `didEndDisplaying` method has cancelled
     // it's operation if so we can again enable it.
-    //print("will display cell: \(indexPath.row)")
+    print("will display cell: \(indexPath.row)")
     let flickrModel = flickrArray[indexPath.row]
     let width = Int(getSizeOfCell(collectionView: collectionView).width)
     self.imageFetcher.getImageFor(flickrModel: flickrModel, width: width, priority: .veryHigh, index: indexPath.row) { (image) in
