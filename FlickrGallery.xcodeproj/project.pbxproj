@@ -33,6 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		910AAD28213C19E200E5A3B9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		910AAD2B213C1ADD00E5A3B9 /* GalleryViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewControllerTests.swift; sourceTree = "<group>"; };
 		913948862139458100D43917 /* ImageDownloadOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadOperation.swift; sourceTree = "<group>"; };
 		91394888213945C600D43917 /* FlickrModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrModel.swift; sourceTree = "<group>"; };
@@ -105,6 +106,7 @@
 		91A01FB42138332E0079A1E5 = {
 			isa = PBXGroup;
 			children = (
+				910AAD28213C19E200E5A3B9 /* README.md */,
 				91A01FBF2138332E0079A1E5 /* FlickrGallery */,
 				91A01FD4213833300079A1E5 /* FlickrGalleryTests */,
 				91A01FBE2138332E0079A1E5 /* Products */,
