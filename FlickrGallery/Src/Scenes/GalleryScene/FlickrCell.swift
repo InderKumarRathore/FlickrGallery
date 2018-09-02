@@ -10,7 +10,6 @@ import UIKit
 
 class FlickrCell: UICollectionViewCell {
   @IBOutlet weak var imageView: UIImageView!
-  @IBOutlet weak var numberLabel: UILabel!
   
   override func prepareForReuse() {
     super.prepareForReuse()

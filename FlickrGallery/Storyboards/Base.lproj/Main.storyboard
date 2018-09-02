@@ -38,26 +38,17 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder-image" translatesAutoresizingMaskIntoConstraints="NO" id="bSf-Ih-yMV">
                                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XKt-e0-RaR">
-                                                    <rect key="frame" x="28.5" y="40.5" width="44.5" height="20.5"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                                    <color key="textColor" red="1" green="0.056107677723830074" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                             </subviews>
                                         </view>
                                         <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="bSf-Ih-yMV" secondAttribute="trailing" id="89h-xT-TBL"/>
                                             <constraint firstItem="bSf-Ih-yMV" firstAttribute="leading" secondItem="wcr-mt-SXc" secondAttribute="leading" id="F26-EM-qxd"/>
-                                            <constraint firstItem="XKt-e0-RaR" firstAttribute="centerY" secondItem="wcr-mt-SXc" secondAttribute="centerY" id="Ue7-qn-wdH"/>
-                                            <constraint firstItem="XKt-e0-RaR" firstAttribute="centerX" secondItem="wcr-mt-SXc" secondAttribute="centerX" id="VaW-j2-d5b"/>
                                             <constraint firstItem="bSf-Ih-yMV" firstAttribute="top" secondItem="wcr-mt-SXc" secondAttribute="top" id="VzQ-FZ-ZiV"/>
                                             <constraint firstAttribute="bottom" secondItem="bSf-Ih-yMV" secondAttribute="bottom" id="vc1-MU-QlP"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="imageView" destination="bSf-Ih-yMV" id="dP8-7e-v8o"/>
-                                            <outlet property="numberLabel" destination="XKt-e0-RaR" id="Zch-UO-qwu"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

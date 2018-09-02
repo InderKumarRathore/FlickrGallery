@@ -127,8 +127,8 @@
 			children = (
 				91A01FE22138412E0079A1E5 /* Assets */,
 				91A01FE42138414C0079A1E5 /* OtherResources */,
-				91A01FE12138411D0079A1E5 /* Storyboards */,
 				91A01FE0213841070079A1E5 /* Src */,
+				91A01FE12138411D0079A1E5 /* Storyboards */,
 			);
 			path = FlickrGallery;
 			sourceTree = "<group>";
@@ -145,9 +145,9 @@
 		91A01FE0213841070079A1E5 /* Src */ = {
 			isa = PBXGroup;
 			children = (
+				91A01FE52138417A0079A1E5 /* AppDelegate */,
 				91B28D4E213A44540097B456 /* DataStore */,
 				91394884213944FD00D43917 /* Networking */,
-				91A01FE52138417A0079A1E5 /* AppDelegate */,
 				91A01FE62138418A0079A1E5 /* Scenes */,
 			);
 			path = Src;

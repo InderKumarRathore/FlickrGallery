@@ -195,7 +195,6 @@ extension GalleryViewController: UICollectionViewDataSource {
         }
       }
     }
-    cell.numberLabel.text = "\(indexPath.row)"
     return cell
   }
   
