@@ -16,7 +16,7 @@ protocol GalleryBusinessLogic {
   /// - Parameters:
   ///   - isNewSearch: whether the search request is new or not
   ///   - text: search text
-  func fetchPage(isNewSearch: Bool, text: String)
+  func fetchPage(isNewSearch: Bool, text: String?)
 
 }
 
@@ -37,23 +37,36 @@ class GalleryInteractor {
 
 // MARK:- GalleryBusinessLogic
 extension GalleryInteractor: GalleryBusinessLogic {
-  func fetchPage(isNewSearch: Bool, text: String) {
-    //Tell the presenter that we're fetching data from the server
-    self.presenter?.fetchingData()
-    
-    self.searchText = text
+  func fetchPage(isNewSearch: Bool, text: String?) {
+    if let searchText = text {
+      self.searchText = searchText
+    }
     let searchApi = FlickrSearchApi()
+    
+    if !isNewSearch {
+      // View wants to load new page
+      self.currentPage += 1
+    }
+    else {
+      //Tell the presenter that we're fetching new data from the server
+      self.presenter?.fetchingData()
+    }
+    
     searchApi.getFlikrImages(pageNumber: self.currentPage, itemsPerPage: self.itemsPerPage, searchText: self.searchText, success: { [weak self] (flickrArray, currentPage, totalPages) in
       self?.currentPage = currentPage
       let canLoadNewPages = currentPage < totalPages
-      //Tell the presenter that we've fetched the data
-      self?.presenter?.dataFetched()
+      if isNewSearch {
+        //Tell the presenter that we've fetched the data
+        self?.presenter?.dataFetched()
+      }
       // Tell the present to show new data
       self?.presenter?.presentFetchedObjects(isNewSearch: isNewSearch, flickrArray: flickrArray, canLoadNewPages: canLoadNewPages)
       
     }) {[weak self] (statusCode, error) in
-      //Tell the presenter that we've fetched the data
-      self?.presenter?.dataFetched()
+      if isNewSearch {
+        //Tell the presenter that we've fetched the data
+        self?.presenter?.dataFetched()
+      }
       // Tell the persenter to show error
       self?.presenter?.showError(statusCode: statusCode, Error: error)
     }

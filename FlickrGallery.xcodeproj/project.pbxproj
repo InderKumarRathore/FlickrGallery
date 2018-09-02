@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		910AAD2C213C1ADD00E5A3B9 /* GalleryViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910AAD2B213C1ADD00E5A3B9 /* GalleryViewControllerTests.swift */; };
 		913948872139458100D43917 /* ImageDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913948862139458100D43917 /* ImageDownloadOperation.swift */; };
 		91394889213945C600D43917 /* FlickrModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91394888213945C600D43917 /* FlickrModel.swift */; };
 		91A01FC12138332E0079A1E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A01FC02138332E0079A1E5 /* AppDelegate.swift */; };
@@ -14,7 +15,6 @@
 		91A01FC62138332E0079A1E5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91A01FC42138332E0079A1E5 /* Main.storyboard */; };
 		91A01FC8213833300079A1E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91A01FC7213833300079A1E5 /* Assets.xcassets */; };
 		91A01FCB213833300079A1E5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91A01FC9213833300079A1E5 /* LaunchScreen.storyboard */; };
-		91A01FD6213833300079A1E5 /* FlickrGalleryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A01FD5213833300079A1E5 /* FlickrGalleryTests.swift */; };
 		91A01FE9213863500079A1E5 /* FlickrCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A01FE8213863500079A1E5 /* FlickrCell.swift */; };
 		91A45D2C213AF47000E4649F /* ImageFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A45D2B213AF47000E4649F /* ImageFetcher.swift */; };
 		91B28D51213A449F0097B456 /* FlickrSearchApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B28D50213A449F0097B456 /* FlickrSearchApi.swift */; };
@@ -33,6 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		910AAD2B213C1ADD00E5A3B9 /* GalleryViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewControllerTests.swift; sourceTree = "<group>"; };
 		913948862139458100D43917 /* ImageDownloadOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadOperation.swift; sourceTree = "<group>"; };
 		91394888213945C600D43917 /* FlickrModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrModel.swift; sourceTree = "<group>"; };
 		91A01FBD2138332E0079A1E5 /* FlickrGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,7 +44,6 @@
 		91A01FCA213833300079A1E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91A01FCC213833300079A1E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		91A01FD1213833300079A1E5 /* FlickrGalleryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlickrGalleryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		91A01FD5213833300079A1E5 /* FlickrGalleryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrGalleryTests.swift; sourceTree = "<group>"; };
 		91A01FD7213833300079A1E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		91A01FE8213863500079A1E5 /* FlickrCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrCell.swift; sourceTree = "<group>"; };
 		91A45D2B213AF47000E4649F /* ImageFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFetcher.swift; sourceTree = "<group>"; };
@@ -70,6 +70,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		910AAD29213C1A8E00E5A3B9 /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				910AAD2A213C1A9600E5A3B9 /* GalleryScene */,
+			);
+			path = Scene;
+			sourceTree = "<group>";
+		};
+		910AAD2A213C1A9600E5A3B9 /* GalleryScene */ = {
+			isa = PBXGroup;
+			children = (
+				910AAD2B213C1ADD00E5A3B9 /* GalleryViewControllerTests.swift */,
+			);
+			path = GalleryScene;
+			sourceTree = "<group>";
+		};
 		91394884213944FD00D43917 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,7 +134,7 @@
 		91A01FD4213833300079A1E5 /* FlickrGalleryTests */ = {
 			isa = PBXGroup;
 			children = (
-				91A01FD5213833300079A1E5 /* FlickrGalleryTests.swift */,
+				910AAD29213C1A8E00E5A3B9 /* Scene */,
 				91A01FD7213833300079A1E5 /* Info.plist */,
 			);
 			path = FlickrGalleryTests;
@@ -266,6 +282,7 @@
 					};
 					91A01FD0213833300079A1E5 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 0940;
 						TestTargetID = 91A01FBC2138332E0079A1E5;
 					};
 				};
@@ -330,7 +347,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				91A01FD6213833300079A1E5 /* FlickrGalleryTests.swift in Sources */,
+				910AAD2C213C1ADD00E5A3B9 /* GalleryViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,6 +538,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = UZ588YPX8M;
 				INFOPLIST_FILE = FlickrGalleryTests/Info.plist;
@@ -531,6 +549,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikr.FlickrGalleryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlickrGallery.app/FlickrGallery";
@@ -542,6 +561,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = UZ588YPX8M;
 				INFOPLIST_FILE = FlickrGalleryTests/Info.plist;

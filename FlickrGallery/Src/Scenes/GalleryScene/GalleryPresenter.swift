@@ -25,7 +25,7 @@ extension GalleryPresenter: GalleryPresentationLogic {
   
   func presentFetchedObjects(isNewSearch: Bool, flickrArray: [FlickrModel], canLoadNewPages: Bool) {
     DispatchQueue.main.async {
-      self.viewController?.displayFetchedObjects(isNewSearch: isNewSearch, flickrArray: flickrArray)
+      self.viewController?.displayFetchedObjects(isNewSearch: isNewSearch, flickrArray: flickrArray, canLoadMore: canLoadNewPages)
     }
   }
   

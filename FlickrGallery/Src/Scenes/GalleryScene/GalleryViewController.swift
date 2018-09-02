@@ -17,7 +17,8 @@ protocol GalleryDisplayLogic: class {
   /// - Parameters:
   ///   - isNewSearch: whether the search was new or exisiting
   ///   - flickrArray: list of `FlickrModel`
-  func displayFetchedObjects(isNewSearch: Bool, flickrArray: [FlickrModel])
+  ///   - canLoadMore: Wether it can load more data or not
+  func displayFetchedObjects(isNewSearch: Bool, flickrArray: [FlickrModel], canLoadMore: Bool)
   
   /// Shows the loader
   func showLoader()
@@ -35,11 +36,15 @@ class GalleryViewController: UIViewController {
   @IBOutlet weak var collectionView: UICollectionView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   
+  // Holds the array fo models
+  private var flickrArray = [FlickrModel]()
   
-  var flickrArray = [FlickrModel]()
+  
+  /// Indicates that more data can be loaded
+  private var canLoadMore = false
   
   // Clean Architecture references
-  private var interactor: GalleryBusinessLogic!
+  var interactor: GalleryBusinessLogic!
   
   /// Image fetcher to fetch the images asyncronously
   let imageFetcher = ImageFetcher(concurrentOperations: 3, cacheImageCount: 50)
@@ -100,15 +105,32 @@ class GalleryViewController: UIViewController {
       return CGSize(width: 100.0, height: 100.0)
     }
   }
+  
+  func loadMore() {
+    self.interactor.fetchPage(isNewSearch: false, text: nil)
+  }
+  
+  
 }
 
 // MARK:- GalleryDisplayLogic
 extension GalleryViewController: GalleryDisplayLogic {
-  func displayFetchedObjects(isNewSearch: Bool, flickrArray: [FlickrModel]) {
+  func displayFetchedObjects(isNewSearch: Bool, flickrArray: [FlickrModel], canLoadMore: Bool) {
     if isNewSearch {
       self.flickrArray = flickrArray
       self.collectionView.reloadData()
     }
+    else {
+      var indexPaths = [IndexPath]()
+      let count = self.flickrArray.count
+      for i in 0..<flickrArray.count {
+        let indexPath = IndexPath(row: count + i, section: 0)
+        indexPaths.append(indexPath)
+      }
+      self.flickrArray.append(contentsOf: flickrArray)
+      self.collectionView.insertItems(at: indexPaths)
+    }
+    self.canLoadMore = canLoadMore
   }
   
   func showLoader() {
@@ -137,6 +159,7 @@ extension GalleryViewController: UISearchBarDelegate {
       // Empty the array & collection view
       self.flickrArray.removeAll()
       self.collectionView.reloadData()
+      self.canLoadMore = false
       // Tell the interactor that view need new data
       self.interactor.fetchPage(isNewSearch: true, text: searchBar.text!)
     }
@@ -157,9 +180,8 @@ extension GalleryViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     //    ////print("Cell at index:\(indexPath.row)")
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickrCell", for: indexPath) as! FlickrCell
-    // Set the tag
+    // Set the tag to compare in the completion handler
     cell.tag = indexPath.row
-    
     
     let flickrModel = self.flickrArray[indexPath.row]
     let width = Int(getSizeOfCell(collectionView: collectionView).width * UIScreen.main.scale)
@@ -176,6 +198,11 @@ extension GalleryViewController: UICollectionViewDataSource {
     cell.numberLabel.text = "\(indexPath.row)"
     return cell
   }
+  
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "FooterID", for: indexPath)
+    return footerView
+  }
 }
 
 
@@ -184,6 +211,15 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
   // Set the size of the cell
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     return getSizeOfCell(collectionView: collectionView)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+    if self.canLoadMore {
+      return CGSize(width: collectionView.frame.size.width, height: 40)
+    }
+    else {
+      return CGSize.zero
+    }
   }
 }
 
@@ -206,8 +242,10 @@ extension GalleryViewController: UICollectionViewDataSourcePrefetching {
     // Cancel any in progress requests for data for the specified index paths.
     for indexPath in indexPaths {
       ////print("Cancel prefetch: \(indexPath.row)")
-      let flickrModel = flickrArray[indexPath.row]
-      self.imageFetcher.cancelImageLoadingFor(flickrModel: flickrModel)
+      if flickrArray.count > indexPath.row {
+        let flickrModel = flickrArray[indexPath.row]
+        self.imageFetcher.cancelImageLoadingFor(flickrModel: flickrModel)
+      }
     }
   }
 }
@@ -244,6 +282,12 @@ extension GalleryViewController: UICollectionViewDelegate {
           }
         }
       }
+    }
+    
+    
+    // Load more functionality
+    if indexPath.row == (self.flickrArray.count - 1) {
+      loadMore()
     }
   }
   
