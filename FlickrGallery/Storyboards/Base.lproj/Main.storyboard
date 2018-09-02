@@ -35,7 +35,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bSf-Ih-yMV">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder-image" translatesAutoresizingMaskIntoConstraints="NO" id="bSf-Ih-yMV">
                                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XKt-e0-RaR">
@@ -46,6 +46,7 @@
                                                 </label>
                                             </subviews>
                                         </view>
+                                        <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="bSf-Ih-yMV" secondAttribute="trailing" id="89h-xT-TBL"/>
                                             <constraint firstItem="bSf-Ih-yMV" firstAttribute="leading" secondItem="wcr-mt-SXc" secondAttribute="leading" id="F26-EM-qxd"/>
@@ -66,7 +67,11 @@
                                     <outlet property="prefetchDataSource" destination="BYZ-38-t0r" id="fSc-6p-2AW"/>
                                 </connections>
                             </collectionView>
-                            <searchBar contentMode="redraw" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="H1f-Ym-jFg">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="fyV-ZA-zZu">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
+                            <searchBar contentMode="redraw" placeholder="Search kittens" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="H1f-Ym-jFg">
                                 <rect key="frame" x="0.0" y="64" width="375" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -76,9 +81,11 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="fyV-ZA-zZu" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="1Rh-IZ-2hV"/>
                             <constraint firstItem="H1f-Ym-jFg" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GEr-WL-rEx"/>
                             <constraint firstItem="H1f-Ym-jFg" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="KBs-zT-PuH"/>
                             <constraint firstItem="H1f-Ym-jFg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Lg8-mE-svT"/>
+                            <constraint firstItem="fyV-ZA-zZu" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="OKZ-jx-Ne2"/>
                             <constraint firstItem="kZS-JH-ZOd" firstAttribute="top" secondItem="H1f-Ym-jFg" secondAttribute="bottom" id="XnQ-h4-bAB"/>
                             <constraint firstItem="kZS-JH-ZOd" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="hEL-wP-GMv"/>
                             <constraint firstItem="kZS-JH-ZOd" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ivH-mB-FuW"/>
@@ -88,6 +95,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Photos" id="uUi-3d-rBR"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="fyV-ZA-zZu" id="L3b-bl-yoT"/>
                         <outlet property="collectionView" destination="kZS-JH-ZOd" id="CMV-Bf-48h"/>
                     </connections>
                 </viewController>
@@ -114,4 +122,7 @@
             <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="placeholder-image" width="170" height="170"/>
+    </resources>
 </document>

@@ -8,70 +8,80 @@
 
 import UIKit
 
+
+// Class only protocol, b'coz GalleryVC needs to be weak in presenter
+protocol GalleryDisplayLogic: class {
+  
+  /// Displays the flickr objects of new search
+  ///
+  /// - Parameters:
+  ///   - isNewSearch: whether the search was new or exisiting
+  ///   - flickrArray: list of `FlickrModel`
+  func displayFetchedObjects(isNewSearch: Bool, flickrArray: [FlickrModel])
+  
+  /// Shows the loader
+  func showLoader()
+  
+  /// Hides the loader
+  func hideLoader()
+  
+  /// Shows the error message
+  ///
+  /// - Parameter _msg: Message to be displayed
+  func showError(_ msg: String)
+}
+
 class GalleryViewController: UIViewController {
   @IBOutlet weak var collectionView: UICollectionView!
-  var operationQueue: OperationQueue!
+  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+  
+  
+  var flickrArray = [FlickrModel]()
+  
+  // Clean Architecture references
+  private var interactor: GalleryBusinessLogic!
+  
+  /// Image fetcher to fetch the images asyncronously
+  let imageFetcher = ImageFetcher(concurrentOperations: 3, cacheImageCount: 50)
+  
+  // MARK: Object lifecycle
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    setUpCleanArchitecture()
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    setUpCleanArchitecture()
+  }
+  
+  /// Set ups the clean architecture
+  /// You can read more about it at the below link
+  /// https://hackernoon.com/introducing-clean-swift-architecture-vip-770a639ad7bf
+  private func setUpCleanArchitecture() {
+    let viewController = self
+    let interactor = GalleryInteractor()
+    let presenter = GalleryPresenter()
+    viewController.interactor = interactor // strong reference
+    interactor.presenter = presenter // strong reference
+    presenter.viewController = viewController // weak reference
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    operationQueue = OperationQueue()
-    operationQueue.maxConcurrentOperationCount = 3
-    let session = URLSession(configuration: .default)
-    
-    for _ in 0..<6{
-      let op = ImageDownloadOperation(flickrModel: FlickrModel(), session: session, completionHandler: nil)
-      operationQueue.addOperation(op)
-    }
-    
   }
   
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
-  }
-}
-
-
-
-// MARK:- UISearchBarDelegate
-extension GalleryViewController: UISearchBarDelegate {
-  // Search tapped on keyboard
-  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    searchBar.resignFirstResponder()
+    // Clear the image cache
+    self.imageFetcher.clearCache()
   }
   
-  // Cancel tapped
-  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-    searchBar.resignFirstResponder()
-  }
-}
-
-
-
-
-// MARK:- UICollectionViewDataSource
-extension GalleryViewController: UICollectionViewDataSource {
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 1
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//    print("Cell at index:\(indexPath.row)")
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickrCell", for: indexPath) as! FlickrCell
-    cell.backgroundColor = UIColor.black
-    cell.imageView.image = UIImage(named: "IMG_\(indexPath.row).jpg")
-    cell.numberLabel.text = "\(indexPath.row)"
-    return cell
-  }
-}
-
-
-
-
-// MARK:- UICollectionViewDelegateFlowLayout
-extension GalleryViewController: UICollectionViewDelegateFlowLayout {
-  // Set the size of the cell
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+  /// Gets the size for the cell
+  ///
+  /// - Parameter collectionView: collection view
+  /// - Returns: size for the cells
+  func getSizeOfCell(collectionView: UICollectionView) -> CGSize {
     if let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
       // Number of cells that we want to be displayed in single row
       let cellsPerRow: CGFloat = 3.0
@@ -86,40 +96,156 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
       return CGSize(width: widthPerCell, height: widthPerCell)
     }
     else {
-      print("Warning: Layout is not flow layout")
+      ////print("Warning: Layout is not flow layout")
       return CGSize(width: 100.0, height: 100.0)
     }
   }
 }
 
+// MARK:- GalleryDisplayLogic
+extension GalleryViewController: GalleryDisplayLogic {
+  func displayFetchedObjects(isNewSearch: Bool, flickrArray: [FlickrModel]) {
+    if isNewSearch {
+      self.flickrArray = flickrArray
+      self.collectionView.reloadData()
+    }
+  }
+  
+  func showLoader() {
+    self.activityIndicator.startAnimating()
+  }
+  
+  func hideLoader() {
+    self.activityIndicator.stopAnimating()
+  }
+  
+  func showError(_ msg: String) {
+    let alert = UIAlertController(title: "Oppsss!", message: msg, preferredStyle: .alert)
+    let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+    alert.addAction(action)
+    self.present(alert, animated: true, completion: nil)
+  }
+}
+
+
+// MARK:- UISearchBarDelegate
+extension GalleryViewController: UISearchBarDelegate {
+  // Search tapped on keyboard
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.resignFirstResponder()
+    if searchBar.text != "" {
+      // Empty the array & collection view
+      self.flickrArray.removeAll()
+      self.collectionView.reloadData()
+      // Tell the interactor that view need new data
+      self.interactor.fetchPage(isNewSearch: true, text: searchBar.text!)
+    }
+  }
+  
+  // Cancel tapped
+  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.resignFirstResponder()
+  }
+}
+
+// MARK:- UICollectionViewDataSource
+extension GalleryViewController: UICollectionViewDataSource {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return self.flickrArray.count
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    //    ////print("Cell at index:\(indexPath.row)")
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickrCell", for: indexPath) as! FlickrCell
+    // Set the tag
+    cell.tag = indexPath.row
+    
+    
+    let flickrModel = self.flickrArray[indexPath.row]
+    let width = Int(getSizeOfCell(collectionView: collectionView).width * UIScreen.main.scale)
+    //print("Cell for row: \(indexPath.row)")
+    self.imageFetcher.getImageFor(flickrModel: flickrModel, width: width, priority: .high, index: indexPath.row) { (image) in
+      DispatchQueue.main.async {
+        ////print("Data fetched: \(indexPath.row)")
+        //Check if the cell is the same cell that requested this image
+        if cell.tag == indexPath.row {
+          cell.imageView.image = image
+        }
+      }
+    }
+    cell.numberLabel.text = "\(indexPath.row)"
+    return cell
+  }
+}
+
+
+// MARK:- UICollectionViewDelegateFlowLayout
+extension GalleryViewController: UICollectionViewDelegateFlowLayout {
+  // Set the size of the cell
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    return getSizeOfCell(collectionView: collectionView)
+  }
+}
 
 
 // MARK:- UICollectionViewDataSourcePrefetching
 extension GalleryViewController: UICollectionViewDataSourcePrefetching {
-  /// - Tag: Prefetching
+  /// Prefetch data
   func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-//    print("Prefetch:\(indexPaths)")
     // Begin asynchronously fetching data for the requested index paths.
-//    for indexPath in indexPaths {
-//      let model = models[indexPath.row]
-//      asyncFetcher.fetchAsync(model.id)
-//    }
+    for indexPath in indexPaths {
+      ////print("Prefetching: \(indexPath.row)")
+      let flickrModel = flickrArray[indexPath.row]
+      let width = Int(getSizeOfCell(collectionView: collectionView).width * UIScreen.main.scale)
+      self.imageFetcher.getImageFor(flickrModel: flickrModel, width: width, priority: .low, index: indexPath.row, completionHandler: nil)
+    }
   }
   
-  /// - Tag: CancelPrefetching
+  /// Cancel prefetching
   func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-    // Cancel any in-flight requests for data for the specified index paths.
-//    for indexPath in indexPaths {
-//      let model = models[indexPath.row]
-//      asyncFetcher.cancelFetch(model.id)
-//    }
+    // Cancel any in progress requests for data for the specified index paths.
+    for indexPath in indexPaths {
+      ////print("Cancel prefetch: \(indexPath.row)")
+      let flickrModel = flickrArray[indexPath.row]
+      self.imageFetcher.cancelImageLoadingFor(flickrModel: flickrModel)
+    }
   }
 }
 
 // MARK:- UICollectionViewDelegate
 extension GalleryViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    print("Operation:\(operationQueue.operations.count)")
   }
+  
+  func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    // Cell is removed from the collection view, cancel in progress requests for data for the specified index paths
+    //print("did end cell: \(indexPath.row)")
+    // This method gets called when we reload data
+    if flickrArray.count > indexPath.row {
+      let flickrModel = flickrArray[indexPath.row]
+      self.imageFetcher.cancelImageLoadingFor(flickrModel: flickrModel)
+    }
+  }
+  
+  
+  
+  func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    // Cell is about to render, check whether `didEndDisplaying` method has cancelled
+    // it's operation if so we can again enable it.
+    //print("will display cell: \(indexPath.row)")
+    let flickrModel = flickrArray[indexPath.row]
+    let width = Int(getSizeOfCell(collectionView: collectionView).width)
+    self.imageFetcher.getImageFor(flickrModel: flickrModel, width: width, priority: .veryHigh, index: indexPath.row) { (image) in
+      DispatchQueue.main.async {
+        //Check if the cell is the same cell that requested this image
+        if cell.tag == indexPath.row {
+          if let flickrCell = cell as? FlickrCell {
+            flickrCell.imageView.image = image
+          }
+        }
+      }
+    }
+  }
+  
 }
 

@@ -13,17 +13,20 @@ class ImageDownloadOperation: Operation {
   /// Holds the infomation about the chunk that needs to be downloaded
   private let flickrModel: FlickrModel
   
+  // FIXME: This is for debuggin purpose and can bre removed
+  var index = 0
+  
   /// URL Sessoin
   private let session: URLSession
   
   /// Download task
   private var downloadTask: URLSessionDownloadTask? = nil
   
-  typealias ClosureType = (Bool, FlickrModel) -> Void
-  private var completionHandler: ClosureType? = nil
+  typealias CompletionHandlerClosure = (_ successFullySaved: Bool, FlickrModel) -> Void
+  private var completionHandler: CompletionHandlerClosure
   
   
-  init(flickrModel: FlickrModel, session: URLSession, completionHandler: ClosureType?) {
+  init(flickrModel: FlickrModel, session: URLSession, completionHandler: @escaping CompletionHandlerClosure) {
     self.flickrModel = flickrModel
     self.session = session
     self.completionHandler = completionHandler
@@ -39,22 +42,22 @@ class ImageDownloadOperation: Operation {
     }
     
     // Operation is not canceled, setup the task
-    if let url = URL(string: "http://mallingdowndogs.co.uk/wp-content/uploads/2016/06/MG_0486wefewr.jpg") {
+    if let url = URL(string: "http://farm\(flickrModel.farm).static.flickr.com/\(flickrModel.server)/\(flickrModel.id)_\(flickrModel.secret).jpg") {
       self.downloadTask = self.session.downloadTask(with: url, completionHandler: {[weak self] (url, response, error) in
         // Boolean to tell whether data has been successfuly donwloaded and saved to disk
         var success = false
         // Check for error and status code
-        if error != nil {
+        if error == nil {
           if let res = response as? HTTPURLResponse {
             if res.statusCode == 200 {
               // Now we have successfully downloaded the  file.
               if let srcUrl = url, let destUrl = self?.flickrModel.getDiskUrl() {
                 do {
-                  try FileManager.default.copyItem(at: srcUrl, to: destUrl)
+                  try FileManager.default.moveItem(at: srcUrl, to: destUrl)
                   success = true
                 }
                 catch {
-                  print("Failed to save the file:\(String(describing: self?.flickrModel.getFileName()))")
+                  //print("Failed to save the file:\(error)")
                 }
               }
             }
